@@ -66,8 +66,9 @@ else
 
     if [[ "$#" -eq 2 ]]; then
       activityNum=$(reFormatNum $2)
-
-      rsync -av --progress ${pathToContent}/01*/${weekNum}*/01*/${activityNum}* ${pathToStudentRepo}/${weekNum}*/01* --exclude Solved > /dev/null
+      export MSYS_NO_PATHCONV=1
+      rsync -r -av --progress /cygdrive/${pathToContent}/01*/${weekNum}*/01*/${activityNum}* ${pathToStudentRepo}/${weekNum}*/01* --exclude Solved --exclude Main> /dev/null
+      unset MSYS_NO_PATHCONV
 
       activity=$(echo ${pathToContent}/01*/${weekNum}*/01*/${activityNum}* | sed -E 's/^[^0-9].*Activities\/([0-9]+.*)/\1/')
       destination=$(echo ${pathToStudentRepo}/${weekNum}*/01* | sed -E 's/^.*(UCD.*)/\1/')
@@ -83,8 +84,9 @@ else
     else
       for num in $(seq $2 $3); do
         activityNum=$(reFormatNum $num)
-
-        rsync -av --progress ${pathToContent}/01*/${weekNum}*/01*/${activityNum}* ${pathToStudentRepo}/${weekNum}*/01* --exclude Solved > /dev/null
+        export MSYS_NO_PATHCONV=1
+        rsync -av --progress /cygdrive/${pathToContent}/01*/${weekNum}*/01*/${activityNum}* ${pathToStudentRepo}/${weekNum}*/01* --exclude Solved --exclude Main > /dev/null
+        unset MSYS_NO_PATHCONV
 
         activity=$(echo ${pathToContent}/01*/${weekNum}*/01*/${activityNum}* | sed -E 's/^[^0-9].*Activities\/([0-9]+.*)/\1/')
         destination=$(echo ${pathToStudentRepo}/${weekNum}*/01* | sed -E 's/^.*(UCD.*)/\1/')
@@ -100,9 +102,10 @@ else
       done
     fi
   fi  
-
-  rsync -av --progress ${pathToContent}/01*/${weekNum}* ${pathToStudentRepo} --exclude 01-Activities --exclude Solved --exclude Main > /dev/null
-
+  export MSYS_NO_PATHCONV=1
+  rsync -av --progress /cygdrive/${pathToContent}/01*/${weekNum}* ${pathToStudentRepo} --exclude 01-Activities --exclude Solved --exclude Main > /dev/null
+  unset MSYS_NO_PATHCONV
+  
   # commit if SHOULD_COMMIT
   if [[ $SHOULD_COMMIT -eq 1 ]]; then
     git add $1*
